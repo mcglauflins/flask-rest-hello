@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
-
 db = SQLAlchemy()
 
 
@@ -10,6 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    favorite_people = db.relationship("FavoritePeople")
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -18,6 +18,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "favorite_people": self.favorite_people
             # do not serialize the password, its a security breach
         }
 
@@ -77,3 +78,21 @@ class Planet(db.Model):
     climate = db.Column(db.String(120), unique=True, nullable=True)
     terrain = db.Column(db.String(120), unique=True, nullable=True)
     surface_water = db.Column(db.String(120), unique=True, nullable=True)
+
+
+class FavoritePeople(db.Model):
+    user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
+    person_id = db.Column(db.ForeignKey('person.id'), primary_key=True)
+    person = db.relationship("Person")
+
+
+class FavoriteVehicle(db.Model):
+    user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
+    vehicle_id = db.Column(db.ForeignKey('vehicle.id'), primary_key=True)
+    vehicle = db.relationship("Vehicles")
+
+
+class FavoritePlanet(db.Model):
+    user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
+    vehicle_id = db.Column(db.ForeignKey('planet.id'), primary_key=True)
+    planet = db.relationship("Planet")
