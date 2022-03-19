@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Person, Planet, Vehicles
 # from models import Person
 
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
@@ -48,6 +48,26 @@ def user():
     }
     return jsonify(response_body), 200
 
+@app.route('/person', methods=['GET'])
+def get_person():
+    person = Person.query(Person)
+    person = [person.serialize() for person in person]
+
+    return jsonify(person), 200
+
+@app.route('/vehicles', methods=['GET'])
+def get_vehicles():
+    vehicles = Vehicles.query.all()
+    vehicles = [vehicles.serialize() for vehicles in vehicles]
+
+    return jsonify(vehicles), 200
+
+@app.route('/planet', methods=['GET'])
+def get_planet():
+    planet = Planet.query.all()
+    planet = [planet.serialize() for planet in planet]
+
+    return jsonify(planet), 200
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
