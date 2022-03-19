@@ -10,6 +10,8 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     favorite_people = db.relationship("FavoritePeople")
+    favorite_vehicles = db.relationship("FavoriteVehicles")
+    favorite_planet = db.relationship("FavoritePlanet")
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -18,7 +20,9 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "favorite_people": self.favorite_people
+            "favorite_people": self.favorite_people,
+            "favorite_vehicles": self.favorite_vehicles,
+            "favorite_planet": self.favorite_planet
             # do not serialize the password, its a security breach
         }
 
@@ -86,13 +90,13 @@ class FavoritePeople(db.Model):
     person = db.relationship("Person")
 
 
-class FavoriteVehicle(db.Model):
+class FavoriteVehicles(db.Model):
     user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
-    vehicle_id = db.Column(db.ForeignKey('vehicle.id'), primary_key=True)
+    vehicle_id = db.Column(db.ForeignKey('vehicles.id'), primary_key=True)
     vehicle = db.relationship("Vehicles")
 
 
 class FavoritePlanet(db.Model):
     user_id = db.Column(db.ForeignKey('user.id'), primary_key=True)
-    vehicle_id = db.Column(db.ForeignKey('planet.id'), primary_key=True)
+    planet_id = db.Column(db.ForeignKey('planet.id'), primary_key=True)
     planet = db.relationship("Planet")
